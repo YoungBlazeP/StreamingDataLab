@@ -7,7 +7,7 @@ Pixel RPG characters created by Sean Browning.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.IO;
 
 #region Assignment Instructions
 
@@ -15,11 +15,11 @@ using UnityEngine;
 
 Wax on, wax off.
 
-    The development of saving and loading systems shares much in common with that of networked gameplay development.  
-    Both involve developing around data which is packaged and passed into (or gotten from) a stream.  
+    The development of saving and loading systems shares much in common with that of networked gameplay development.
+    Both involve developing around data which is packaged and passed into (or gotten from) a stream.
     Thus, prior to attacking the problems of development for networked games, you will strengthen your abilities to develop solutions using the easier to work with HD saving/loading frameworks.
 
-    Try to understand not just the framework tools, but also, 
+    Try to understand not just the framework tools, but also,
     seek to familiarize yourself with how we are able to break data down, pass it into a stream and then rebuild it from another stream.
 
 
@@ -68,21 +68,37 @@ public partial class PartyCharacter
 #endregion
 
 
-#region Assignment Part 1
+#region Lab Part 1
 
 static public class AssignmentPart1
 {
 
     static public void SavePartyButtonPressed()
     {
+        Debug.Log("Start of lopp");
+
+        StreamWriter sw = new StreamWriter(Application.dataPath + Path.DirectorySeparatorChar + "SaveFile.txt");
+
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
-            Debug.Log("PC class id == " + pc.classID);
+            // Saving
+            Debug.Log(pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom + ",");
+
+            sw.WriteLine(pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom + ",");
+
+
         }
+
+        sw.Close();
+
+        Debug.Log("End of loop");
     }
 
     static public void LoadPartyButtonPressed()
     {
+
+
+
 
         //GameContent.partyCharacters.Clear();
 
@@ -109,14 +125,14 @@ static public class AssignmentConfiguration
 
 /*
 
-In this part of the assignment you are challenged to expand on the functionality that you have already created.  
+In this part of the assignment you are challenged to expand on the functionality that you have already created.
     You are being challenged to save, load and manage multiple parties.
     You are being challenged to identify each party via a string name (a member of the Party class).
 
-To aid you in this challenge, the UI has been altered.  
+To aid you in this challenge, the UI has been altered.
 
-    The load button has been replaced with a drop down list.  
-    When this load party drop down list is changed, LoadPartyDropDownChanged(string selectedName) will be called.  
+    The load button has been replaced with a drop down list.
+    When this load party drop down list is changed, LoadPartyDropDownChanged(string selectedName) will be called.
     When this drop down is created, it will be populated with the return value of GetListOfPartyNames().
 
     GameStart() is called when the program starts.
@@ -132,7 +148,7 @@ Again, you are being challenged to develop the ability to save and load multiple
     Let me ask you,
         What do you need to program to produce the saving, loading and management of multiple parties?
         What are the variables that you will need to declare?
-        What are the things that you will need to do?  
+        What are the things that you will need to do?
     So much of development is just breaking problems down into smaller parts.
     Take the time to name each part of what you will create and then, do it.
 
