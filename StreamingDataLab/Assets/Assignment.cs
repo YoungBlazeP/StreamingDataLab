@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+
 #region Assignment Instructions
 
 /*  Hello!  Welcome to your first lab :)
@@ -96,11 +97,30 @@ static public class AssignmentPart1
 
     static public void LoadPartyButtonPressed()
     {
+        GameContent.partyCharacters.Clear();
 
+        string path = Application.dataPath + Path.DirectorySeparatorChar + "SaveFile.txt";
 
+        if (File.Exists(path))
+        {
+            string line = "";
+            StreamReader sr = new StreamReader(path); //Open file
 
+            while ((line = sr.ReadLine()) != null)
+            {
+                string[] csv = line.Split(',');
 
-        //GameContent.partyCharacters.Clear();
+                foreach (string i in csv)
+                    Debug.Log(i);
+
+                Debug.Log(line);
+
+                PartyCharacter pc = new PartyCharacter(int.Parse(csv[0]), int.Parse(csv[1]), int.Parse(csv[2]), int.Parse(csv[3]),
+                    int.Parse(csv[4]), int.Parse(csv[5]));
+
+                GameContent.partyCharacters.AddLast(pc);
+            }
+        }
 
         GameContent.RefreshUI();
 
