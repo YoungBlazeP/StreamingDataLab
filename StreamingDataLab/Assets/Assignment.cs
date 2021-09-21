@@ -50,6 +50,9 @@ public partial class PartyCharacter
 
     public LinkedList<int> equipment;
 
+    public LinkedList<int> affliction;
+
+    public LinkedList<int> otherThing;
 }
 
 
@@ -73,6 +76,9 @@ public partial class PartyCharacter
 
 static public class AssignmentPart1
 {
+    const int PartyCharacterSaveDataSignifier = 0;
+    const int EquipmentSaveDataSignifier = 1;
+    const int AfflictionSaveDataSignifier = 2;
 
     static public void SavePartyButtonPressed()
     {
@@ -83,10 +89,15 @@ static public class AssignmentPart1
         foreach (PartyCharacter pc in GameContent.partyCharacters)
         {
             // Saving
-            Debug.Log(pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom + ",");
+            //Debug.Log(pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom + ",");
 
-            sw.WriteLine(pc.classID + "," + pc.health + "," + pc.mana + "," + pc.strength + "," + pc.agility + "," + pc.wisdom + ",");
+            sw.WriteLine(PartyCharacterSaveDataSignifier + "," + pc.classID + "," + pc.health + "," + pc.mana + "," +
+                pc.strength + "," + pc.agility + "," + pc.wisdom);
 
+            foreach(int equipID in pc.equipment)
+            {
+                sw.WriteLine(EquipmentSaveDataSignifier + equipID);
+            }
 
         }
 
@@ -97,12 +108,13 @@ static public class AssignmentPart1
 
     static public void LoadPartyButtonPressed()
     {
-        GameContent.partyCharacters.Clear();
 
         string path = Application.dataPath + Path.DirectorySeparatorChar + "SaveFile.txt";
 
         if (File.Exists(path))
         {
+            GameContent.partyCharacters.Clear();
+
             string line = "";
             StreamReader sr = new StreamReader(path); //Open file
 
@@ -110,15 +122,28 @@ static public class AssignmentPart1
             {
                 string[] csv = line.Split(',');
 
-                foreach (string i in csv)
-                    Debug.Log(i);
+                //foreach (string i in csv)
+                //    Debug.Log(i);
 
-                Debug.Log(line);
+                //Debug.Log(line);
 
-                PartyCharacter pc = new PartyCharacter(int.Parse(csv[0]), int.Parse(csv[1]), int.Parse(csv[2]), int.Parse(csv[3]),
-                    int.Parse(csv[4]), int.Parse(csv[5]));
+                int saveDataSignifier = int.Parse(csv[0]);
 
-                GameContent.partyCharacters.AddLast(pc);
+                if (saveDataSignifier == PartyCharacterSaveDataSignifier)
+                {
+                    PartyCharacter pc = new PartyCharacter(int.Parse(csv[1]), int.Parse(csv[2]), int.Parse(csv[3]), int.Parse(csv[4]),
+                        int.Parse(csv[5]), int.Parse(csv[6]));
+
+                    GameContent.partyCharacters.AddLast(pc);
+                }
+                else if(saveDataSignifier == EquipmentSaveDataSignifier)
+                {
+                    GameContent.partyCharacters.Last.Value.equipment.AddLast(int.Parse(csv[0]));
+                }
+                else if (saveDataSignifier == AfflictionSaveDataSignifier)
+                {
+                    // Load affliction data
+                }
             }
         }
 
@@ -132,7 +157,7 @@ static public class AssignmentPart1
 #endregion
 
 
-#region Assignment Part 2
+#region Lab Part 2
 
 //  Before Proceeding!
 //  To inform the internal systems that you are proceeding onto the second part of this assignment,
@@ -140,7 +165,7 @@ static public class AssignmentPart1
 //  This will enable the needed UI/function calls for your to proceed with your assignment.
 static public class AssignmentConfiguration
 {
-    public const int PartOfAssignmentThatIsInDevelopment = 1;
+    public const int PartOfAssignmentThatIsInDevelopment = 2;
 }
 
 /*
@@ -199,21 +224,23 @@ static public class AssignmentPart2
     static public void LoadPartyDropDownChanged(string selectedName)
     {
         GameContent.RefreshUI();
+        Debug.Log("L" + selectedName);
     }
 
     static public void SavePartyButtonPressed()
     {
         GameContent.RefreshUI();
+        Debug.Log("S");
     }
 
     static public void NewPartyButtonPressed()
     {
-
+        Debug.Log("N");
     }
 
     static public void DeletePartyButtonPressed()
     {
-
+        Debug.Log("D");
     }
 
 }
